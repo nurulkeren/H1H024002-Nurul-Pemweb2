@@ -2,50 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 
-class MahasiswaController extends Controller
+class MahasiswaWebController extends Controller
 {
     public function index()
     {
-        $daftarMahasiswa = [
-            [
-                'nim' => 'H1A123001',
-                'nama' => 'Andi Prasetyo',
-                'angkatan' => 2023
-            ],
-            [
-                'nim' => 'H1A123002',
-                'nama' => 'Bunga Lestari',
-                'angkatan' => 2023
-            ],
-            [
-                'nim' => 'H1A123003',
-                'nama' => 'Citra Ramadhani',
-                'angkatan' => 2024
-            ],
-        ];
+        $daftarMahasiswa = Mahasiswa::with('programStudi')
+            ->orderBy('nama')
+            ->paginate(10);
 
-        return view('mahasiswa.index', [
-            'daftarMahasiswa' => $daftarMahasiswa
-        ]);
+        return view('mahasiswa.data', ['daftarMahasiswa' => $daftarMahasiswa]);
     }
 
-    public function show(string $nim)
+    public function store(Request $request)
     {
-        return view('mahasiswa.show', [
-            'nim' => $nim
+        $data = $request->validate([
+            'program_studi_id' => ['required', 'exists:program_studis,id'],
+            'nim' => ['required', 'string', 'max:20', 'unique:mahasiswas,nim'],
+            'nama' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'unique:mahasiswas,email'],
+            'angkatan' => ['required', 'integer', 'min:2000'],
         ]);
+
+        Mahasiswa::create($data);
+
+        return redirect()->route('mahasiswa.data')->with('sukses', 'Data mahasiswa berhasil disimpan');
     }
 
-    public function cari(Request $request)
+    public function show(string $id)
     {
-        $kataKunci = $request->query('q', '');
+        $mahasiswa = Mahasiswa::with(['programStudi', 'matakuliahs'])->findOrFail($id);
 
-        return response()->json([
-            'kata_kunci' => $kataKunci,
-            'metode' => $request->method(),
-            'path' => $request->path(),
-        ]);
+        return view('mahasiswa.show', compact('mahasiswa'));
     }
 }
