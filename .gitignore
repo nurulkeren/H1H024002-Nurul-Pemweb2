@@ -5,3 +5,8 @@ latihan-laravel/.env
 
 latihan-fiber/.env
 latihan-fiber/*.exe
+
+# Go Fiber API Modul 6
+latihan-fiber-api/.env
+latihan-fiber-api/bin/
+latihan-fiber-api/*.exe
