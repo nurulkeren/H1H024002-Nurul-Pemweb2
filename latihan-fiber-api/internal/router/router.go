@@ -1,4 +1,3 @@
-
 package router
 
 import (
@@ -17,12 +16,25 @@ func Daftarkan(app *fiber.App) {
 		})
 	})
 
+	// Route Mahasiswa
 	mahasiswa := api.Group("/mahasiswa")
 
-	// Pencarian mahasiswa berdasarkan NIM
-	mahasiswa.Get("/nim/:nim", handler.CariMahasiswaByNIM)
-
-	// Daftar dan detail mahasiswa
 	mahasiswa.Get("/", handler.DaftarMahasiswa)
+	mahasiswa.Post("/", handler.BuatMahasiswa)
 	mahasiswa.Get("/:id", handler.DetailMahasiswa)
+	mahasiswa.Put("/:id", handler.PerbaruiMahasiswa)
+	mahasiswa.Delete("/:id", handler.HapusMahasiswa)
+	mahasiswa.Post("/:id/pulihkan", handler.PulihkanMahasiswa)
+
+	// Route Mata Kuliah
+	matakuliah := api.Group("/matakuliah")
+
+	matakuliah.Get("/", handler.DaftarMataKuliah)
+	matakuliah.Post("/", handler.BuatMataKuliah)
+	matakuliah.Get("/:id", handler.DetailMataKuliah)
+	matakuliah.Put("/:id", handler.PerbaruiMataKuliah)
+	matakuliah.Delete("/:id", handler.HapusMataKuliah)
+
+	// Route Program Studi
+	api.Get("/program-studi", handler.DaftarProgramStudi)
 }
