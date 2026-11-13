@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
+	"latihan-fiber-api/internal/validasi"
 )
 
 func DaftarMahasiswa(c fiber.Ctx) error {
@@ -82,6 +83,16 @@ func BuatMahasiswa(c fiber.Ctx) error {
 	err := c.Bind().Body(&permintaan)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Format body tidak valid")
+	}
+
+	// Validasi data mahasiswa
+	galat := validasi.Periksa(permintaan)
+	if len(galat) > 0 {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"sukses": false,
+			"pesan":  "Data yang dikirim tidak valid",
+			"galat":  galat,
+		})
 	}
 
 	aktif := true
