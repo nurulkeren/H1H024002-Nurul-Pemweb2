@@ -10,3 +10,13 @@ latihan-fiber/*.exe
 latihan-fiber-api/.env
 latihan-fiber-api/bin/
 latihan-fiber-api/*.exe
+# Environment dan rahasia
+.env
+.env.*
+!.env.example
+
+# Dependencies frontend
+node_modules/
+
+# Build frontend
+dist/

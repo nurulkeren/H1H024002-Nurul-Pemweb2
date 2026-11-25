@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	recoverer "github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
@@ -19,6 +20,7 @@ func main() {
 	config.HubungkanBasisData(konf)
 	config.Migrasi()
 	config.DataAwal()
+	config.BuatAdminAwal()
 
 	app := fiber.New(fiber.Config{
 		AppName:      konf.NamaAplikasi,
@@ -29,6 +31,22 @@ func main() {
 	app.Use(logger.New())
 	app.Use(recoverer.New())
 	app.Use(middleware.WaktuProses())
+
+	// Middleware CORS
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:5173"},
+		AllowMethods: []string{
+			"GET", "POST", "PUT",
+			"PATCH", "DELETE", "OPTIONS",
+		},
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Accept",
+			"Authorization",
+			"X-Api-Key",
+		},
+	}))
 
 	// Middleware keamanan API Key
 	app.Use("/api", middleware.KunciApi())
